@@ -22,9 +22,7 @@ function createAppWithInitializr {
   clear
   pei "java -version"
   pei "curl https://start.spring.io/starter.tgz -d dependencies=web,actuator -d javaVersion=17 -d bootVersion=2.7.9 -d type=maven-project | tar -xzf - || exit"
-  pei "git init"
-  pei "git add ."
-  pei 'git commit -m "Initializr"'
+  pei "git init && git add . && git commit -m 'initializr'"
 }
 
 function validateApp {
@@ -51,7 +49,11 @@ function nativeValidate {
 
 initSDKman
 createAppWithInitializr
+talkingPoint
 validateApp
+talkingPoint
 rewriteApplication
+talkingPoint
 validateApp
+talkingPoint
 nativeValidate
