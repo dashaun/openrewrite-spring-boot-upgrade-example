@@ -34,7 +34,7 @@ function validateApp {
 
 function rewriteApplication {
   pei "./mvnw -q -U org.openrewrite.maven:rewrite-maven-plugin:run -Drewrite.recipeArtifactCoordinates=org.openrewrite.recipe:rewrite-spring:LATEST -DactiveRecipes=org.openrewrite.java.spring.boot3.UpgradeSpringBoot_3_0"
-  pei "./mvnw -q -U org.openrewrite.maven:rewrite-maven-plugin:run -Drewrite.recipeArtifactCoordinates=org.openrewrite:rewrite-maven:LATEST -DactiveRecipes=org.openrewrite.maven.RemoveDuplicateDependencies"
+#  pei "./mvnw -q -U org.openrewrite.maven:rewrite-maven-plugin:run -Drewrite.recipeArtifactCoordinates=org.openrewrite:rewrite-maven:LATEST -DactiveRecipes=org.openrewrite.maven.RemoveDuplicateDependencies"
 }
 
 function nativeValidate {
@@ -46,14 +46,19 @@ function nativeValidate {
   pei "kill -9 $NPID"
 }
 
+function quickNativeValidate {
+  pei "GRAALVM_QUICK_BUILD=true ./mvnw -Pnative native:compile -DskipTests"
+  pei "./target/demo &"
+  pei "http :8080/actuator/health"
+  pei "export NPID=$(pgrep demo)"
+  pei "vmmap $NPID | grep Physical"
+  pei "kill -9 $NPID"
+}
+
 
 initSDKman
 createAppWithInitializr
-talkingPoint
 validateApp
 talkingPoint
 rewriteApplication
-talkingPoint
-validateApp
-talkingPoint
-nativeValidate
+quickNativeValidate
