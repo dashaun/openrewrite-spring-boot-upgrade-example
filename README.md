@@ -8,6 +8,11 @@
 - [Demo Magic](https://github.com/paxtonhare/demo-magic) needs to be in the path
 - Java 17
 
+## Quick Start
+```bash
+./demo.sh
+```
+
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [forks-shield]: https://img.shields.io/github/forks/dashaun/openrewrite-spring-boot-upgrade-example.svg?style=for-the-badge
