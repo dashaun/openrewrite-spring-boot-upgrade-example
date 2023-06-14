@@ -4,6 +4,9 @@
 
 # OpenRewrite Spring Boot Upgrade Example
 
+## Prerequisites
+- [Demo Magic](https://github.com/paxtonhare/demo-magic) needs to be in the path
+
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [forks-shield]: https://img.shields.io/github/forks/dashaun/openrewrite-spring-boot-upgrade-example.svg?style=for-the-badge
