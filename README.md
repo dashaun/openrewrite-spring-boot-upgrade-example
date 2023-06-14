@@ -6,6 +6,7 @@
 
 ## Prerequisites
 - [Demo Magic](https://github.com/paxtonhare/demo-magic) needs to be in the path
+- Java 17
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
