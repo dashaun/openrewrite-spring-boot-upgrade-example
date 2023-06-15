@@ -7,6 +7,7 @@
 ## Prerequisites
 - [Demo Magic](https://github.com/paxtonhare/demo-magic) needs to be in the path
 - Java 17
+- [SDKMan](https://sdkman.io/install)
 
 ## Quick Start
 ```bash

@@ -20,8 +20,9 @@ function createAppWithInitializr {
   mkdir $TEMP_DIR
   cd $TEMP_DIR || exit
   clear
+  pei "sdk use java 8.0.372-librca"
   pei "java -version"
-  pei "curl https://start.spring.io/starter.tgz -d dependencies=web,actuator -d javaVersion=17 -d bootVersion=2.7.9 -d type=maven-project | tar -xzf - || exit"
+  pei "curl https://start.spring.io/starter.tgz -d dependencies=web,actuator -d javaVersion=8 -d bootVersion=2.7.1 -d type=maven-project | tar -xzf - || exit"
   pei "git init && git add . && git commit -m 'initializr'"
 }
 
@@ -35,6 +36,8 @@ function validateApp {
 function rewriteApplication {
   pei "./mvnw -q -U org.openrewrite.maven:rewrite-maven-plugin:run -Drewrite.recipeArtifactCoordinates=org.openrewrite.recipe:rewrite-spring:LATEST -DactiveRecipes=org.openrewrite.java.spring.boot3.UpgradeSpringBoot_3_0"
 #  pei "./mvnw -q -U org.openrewrite.maven:rewrite-maven-plugin:run -Drewrite.recipeArtifactCoordinates=org.openrewrite:rewrite-maven:LATEST -DactiveRecipes=org.openrewrite.maven.RemoveDuplicateDependencies"
+  pei "sdk use java 22.3.1.r17-grl"
+  pei "java -version"
 }
 
 function nativeValidate {
@@ -59,6 +62,5 @@ function quickNativeValidate {
 initSDKman
 createAppWithInitializr
 validateApp
-talkingPoint
 rewriteApplication
-quickNativeValidate
+nativeValidate
