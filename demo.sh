@@ -34,9 +34,9 @@ function validateApp {
 }
 
 function rewriteApplication {
-  pei "./mvnw -q -U org.openrewrite.maven:rewrite-maven-plugin:run -Drewrite.recipeArtifactCoordinates=org.openrewrite.recipe:rewrite-spring:LATEST -DactiveRecipes=org.openrewrite.java.spring.boot3.UpgradeSpringBoot_3_0"
+  pei "./mvnw -q -U org.openrewrite.maven:rewrite-maven-plugin:run -Drewrite.recipeArtifactCoordinates=org.openrewrite.recipe:rewrite-spring:LATEST -DactiveRecipes=org.openrewrite.java.spring.boot3.UpgradeSpringBoot_3_1"
 #  pei "./mvnw -q -U org.openrewrite.maven:rewrite-maven-plugin:run -Drewrite.recipeArtifactCoordinates=org.openrewrite:rewrite-maven:LATEST -DactiveRecipes=org.openrewrite.maven.RemoveDuplicateDependencies"
-  pei "sdk use java 22.3.1.r17-grl"
+  pei "sdk use java 17.0.7-graalce"
   pei "java -version"
 }
 
@@ -63,4 +63,5 @@ initSDKman
 createAppWithInitializr
 validateApp
 rewriteApplication
+validateApp
 nativeValidate
