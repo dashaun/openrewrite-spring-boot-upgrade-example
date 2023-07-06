@@ -5,7 +5,6 @@ export DEMO_PROMPT="${GREEN}➜ ${CYAN}\W ${COLOR_RESET}"
 TEMP_DIR=upgrade-example
 
 function talkingPoint() {
-  p ""
   wait
   clear
 }
@@ -22,7 +21,10 @@ function createAppWithInitializr {
   clear
   pei "sdk use java 8.0.372-librca"
   pei "java -version"
-  pei "curl https://start.spring.io/starter.tgz -d dependencies=web,actuator -d javaVersion=8 -d bootVersion=2.7.1 -d type=maven-project | tar -xzf - || exit"
+  pei "export SPRING_BOOT_VERSION=2.3.0"
+  pei "export DEPENDENCIES=web,actuator"
+  pei "curl https://start.spring.io/starter.tgz -d dependencies=$DEPENDENCIES -d javaVersion=8 -d bootVersion=$SPRING_BOOT_VERSION -d type=maven-project | tar -xzf - || exit"
+  talkingPoint
   pei "git init && git add . && git commit -m 'initializr'"
 }
 
@@ -33,14 +35,23 @@ function validateApp {
   pei "./mvnw spring-boot:stop -Dspring-boot.stop.fork"
 }
 
+function validateAppNoFork {
+  pei "./mvnw -q clean package spring-boot:start -DskipTests"
+  pei "http :8080/actuator/health"
+  pei "vmmap $(jps | grep DemoApplication | cut -d ' ' -f 1) | grep Physical"
+  talkingPoint
+  pei "./mvnw spring-boot:stop"
+  clear
+}
+
 function rewriteApplication {
-  pei "./mvnw -U org.openrewrite.maven:rewrite-maven-plugin:run -Drewrite.recipeArtifactCoordinates=org.openrewrite.recipe:rewrite-spring:5.0.2 -DactiveRecipes=org.openrewrite.java.spring.boot3.UpgradeSpringBoot_3_1"
+  pe "./mvnw -U org.openrewrite.maven:rewrite-maven-plugin:run -Drewrite.recipeArtifactCoordinates=org.openrewrite.recipe:rewrite-spring:LATEST -DactiveRecipes=org.openrewrite.java.spring.boot3.UpgradeSpringBoot_3_1"
   pei "sdk use java 17.0.7-graalce"
   pei "java -version"
 }
 
 function nativeValidate {
-  pei "./mvnw -Pnative native:compile -DskipTests"
+  pe "./mvnw -Pnative native:compile -DskipTests"
   pei "./target/demo &"
   pei "http :8080/actuator/health"
   pei "export NPID=$(pgrep demo)"
@@ -60,7 +71,10 @@ function quickNativeValidate {
 
 initSDKman
 createAppWithInitializr
+talkingPoint
 validateApp
+talkingPoint
 rewriteApplication
-validateApp
+talkingPoint
+validateAppNoFork
 nativeValidate
