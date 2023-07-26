@@ -21,7 +21,7 @@ function createAppWithInitializr {
   clear
   pei "sdk use java 8.0.372-librca"
   pei "java -version"
-  pei "export SPRING_BOOT_VERSION=2.3.0"
+  pei "export SPRING_BOOT_VERSION=2.6.0"
   pei "export DEPENDENCIES=web,actuator"
   pei "curl https://start.spring.io/starter.tgz -d dependencies=$DEPENDENCIES -d javaVersion=8 -d bootVersion=$SPRING_BOOT_VERSION -d type=maven-project | tar -xzf - || exit"
   talkingPoint
