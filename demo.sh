@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+
+#set -x
+
 . demo-magic.sh
 export TYPE_SPEED=100
 export DEMO_PROMPT="${GREEN}➜ ${CYAN}\W ${COLOR_RESET}"
@@ -10,7 +13,13 @@ function talkingPoint() {
 }
 
 function initSDKman() {
-  source "$HOME/.sdkman/bin/sdkman-init.sh"
+
+	if [ -z "$SDKMAN_DIR" ]
+	  then
+   	  source "$SDKMAN_DIR/bin/sdkman-init.sh"  
+  else
+  	  source "$HOME/.sdkman/bin/sdkman-init.sh"  
+	fi  
 }
 
 function createAppWithInitializr {
@@ -25,7 +34,7 @@ function createAppWithInitializr {
   pei "export DEPENDENCIES=web,actuator"
   pei "curl https://start.spring.io/starter.tgz -d dependencies=$DEPENDENCIES -d javaVersion=8 -d bootVersion=$SPRING_BOOT_VERSION -d type=maven-project | tar -xzf - || exit"
   talkingPoint
-  pei "git init && git add . && git commit -m 'initializr'"
+  pei "git init && git add . && git commit -m 'initializr'" 
 }
 
 function validateApp {
@@ -46,6 +55,7 @@ function validateAppNoFork {
 
 function rewriteApplication {
   pe "./mvnw -U org.openrewrite.maven:rewrite-maven-plugin:run -Drewrite.recipeArtifactCoordinates=org.openrewrite.recipe:rewrite-spring:LATEST -DactiveRecipes=org.openrewrite.java.spring.boot3.UpgradeSpringBoot_3_1"
+  pe "sdk install java 17.0.7-graalce"
   pei "sdk use java 17.0.7-graalce"
   pei "java -version"
 }
