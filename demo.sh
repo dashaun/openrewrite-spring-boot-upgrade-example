@@ -13,9 +13,10 @@ function talkingPoint() {
 }
 
 function initSDKman() {
-	if [ -z "$SDKMAN_DIR" ]; then
+	if [[ -z "${SDKMAN_DIR}" && -f "${SDKMAN_DIR}/bin/sdkman-init.sh" ]]; then
    	  source "$SDKMAN_DIR/bin/sdkman-init.sh"  
   else
+      echo "SDKMAN_DIR is not set, using default location"
   	  source "$HOME/.sdkman/bin/sdkman-init.sh"  
 	fi
 	sdk install java 8.0.382-librca
