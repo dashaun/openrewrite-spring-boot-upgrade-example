@@ -13,13 +13,13 @@ function talkingPoint() {
 }
 
 function initSDKman() {
-
-	if [ -z "$SDKMAN_DIR" ]
-	  then
+	if [ -z "$SDKMAN_DIR" ]; then
    	  source "$SDKMAN_DIR/bin/sdkman-init.sh"  
   else
   	  source "$HOME/.sdkman/bin/sdkman-init.sh"  
-	fi  
+	fi
+	sdk install java 8.0.382-librca
+	sdk install java 17.0.8-graalce  
 }
 
 function createAppWithInitializr {
@@ -28,7 +28,7 @@ function createAppWithInitializr {
   mkdir $TEMP_DIR
   cd $TEMP_DIR || exit
   clear
-  pei "sdk use java 8.0.372-librca"
+  pei "sdk use java 8.0.382-librca"
   pei "java -version"
   pei "export SPRING_BOOT_VERSION=2.6.0"
   pei "export DEPENDENCIES=web,actuator"
@@ -55,8 +55,7 @@ function validateAppNoFork {
 
 function rewriteApplication {
   pe "./mvnw -U org.openrewrite.maven:rewrite-maven-plugin:run -Drewrite.recipeArtifactCoordinates=org.openrewrite.recipe:rewrite-spring:LATEST -DactiveRecipes=org.openrewrite.java.spring.boot3.UpgradeSpringBoot_3_1"
-  pe "sdk install java 17.0.7-graalce"
-  pei "sdk use java 17.0.7-graalce"
+  pei "sdk use java 17.0.8-graalce"
   pei "java -version"
 }
 
