@@ -21,6 +21,7 @@ function initSDKman() {
 	fi
 	sdk install java 8.0.382-librca
 	sdk install java 17.0.8-graalce  
+        sdk install java 21-open
 }
 
 function createAppWithInitializr {
@@ -57,6 +58,7 @@ function validateAppNoFork {
 function rewriteApplication {
   pe "./mvnw -U org.openrewrite.maven:rewrite-maven-plugin:run -Drewrite.recipeArtifactCoordinates=org.openrewrite.recipe:rewrite-spring:LATEST -DactiveRecipes=org.openrewrite.java.spring.boot3.UpgradeSpringBoot_3_1"
   pei "sdk use java 17.0.8-graalce"
+  pei "sdk use java 21-open"
   pei "java -version"
 }
 
