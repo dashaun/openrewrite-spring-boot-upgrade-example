@@ -9,6 +9,8 @@
   > i.e. `curl -s "https://get.sdkman.io" | bash`
 - [Httpie](https://httpie.io/) needs to be in the path
   > i.e. `brew install httpie`
+- bc, pv, zip, unzip, gcc, zlib1g-dev
+  > i.e. `sudo apt install bc, pv, zip, unzip, gcc, zlib1g-dev -y`
 
 ## Quick Start
 ```bash
