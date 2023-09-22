@@ -2,7 +2,7 @@
 
 #set -x
 
-. demo-magic.sh
+. ./helper.sh
 export TYPE_SPEED=100
 export DEMO_PROMPT="${GREEN}➜ ${CYAN}\W ${COLOR_RESET}"
 TEMP_DIR=upgrade-example

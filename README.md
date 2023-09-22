@@ -5,7 +5,6 @@
 # OpenRewrite Spring Boot Upgrade Example
 
 ## Prerequisites
-- [Demo Magic](https://github.com/paxtonhare/demo-magic) needs to be in the path
 - [SDKMan](https://sdkman.io/install)
   > i.e. `curl -s "https://get.sdkman.io" | bash`
 - [Httpie](https://httpie.io/) needs to be in the path
@@ -15,6 +14,9 @@
 ```bash
 ./demo.sh
 ```
+
+## Attributions
+- [Demo Magic](https://github.com/paxtonhare/demo-magic) is included as `helper.sh`
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
