@@ -4,8 +4,9 @@ minimumRequiredVersion: 0.37.0
 directories:
 
   #! Product release files
-  - path: vendir/reveal.js-4.2.1
+  - path: vendir/demo-magic
     contents:
       - path: .
         git:
-          url: https://github.com/paxtonhare/demo-magic
+          url: https://github.com/paxtonhare/demo-magic.git
+          ref: master

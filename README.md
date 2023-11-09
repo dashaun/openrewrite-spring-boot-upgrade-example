@@ -11,6 +11,8 @@
   > i.e. `brew install httpie`
 - bc, pv, zip, unzip, gcc, zlib1g-dev
   > i.e. `sudo apt install bc, pv, zip, unzip, gcc, zlib1g-dev -y`
+- [Vendir](https://carvel.dev/vendir/)
+  > i.e. `brew tap carvel-dev/carvel && brew install vendir`
 
 ## Quick Start
 ```bash
@@ -18,7 +20,13 @@
 ```
 
 ## Attributions
-- [Demo Magic](https://github.com/paxtonhare/demo-magic) is included as `helper.sh`
+- [Demo Magic](https://github.com/paxtonhare/demo-magic) is pulled via `vendir sync`
+
+## Related Videos
+
+- https://www.youtube.com/live/qQAXXwkaveM?si=4KunXZaretBrPZs3
+- https://www.youtube.com/live/ck4AP7kRQkc?si=lDl203vbfZysrX5e
+- https://www.youtube.com/live/VWPrYcyjG8Q?si=z7Q2Rm_XOlBwCiei
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->

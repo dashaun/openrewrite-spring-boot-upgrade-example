@@ -1,134 +1,137 @@
 #!/usr/bin/env bash
 
-#set -x
-
-. ./helper.sh
+# Load helper functions and set initial variables
+vendir sync
+. ./vendir/demo-magic/demo-magic.sh
 export TYPE_SPEED=100
 export DEMO_PROMPT="${GREEN}➜ ${CYAN}\W ${COLOR_RESET}"
-TEMP_DIR=upgrade-example
+TEMP_DIR="upgrade-example"
+PROMPT_TIMEOUT=5
 
+# Function to pause and clear the screen
 function talkingPoint() {
   wait
   clear
 }
 
+# Initialize SDKMAN and install required Java versions
 function initSDKman() {
-	if [[ -f "$SDKMAN_DIR/bin/sdkman-init.sh" ]]; then
-   	  source "$SDKMAN_DIR/bin/sdkman-init.sh"  
+  local sdkman_init="${SDKMAN_DIR:-$HOME/.sdkman}/bin/sdkman-init.sh"
+  if [[ -f "$sdkman_init" ]]; then
+    source "$sdkman_init"
   else
-      echo "SDKMAN_DIR is not set, using default location"
-  	  source "$HOME/.sdkman/bin/sdkman-init.sh"  
-	fi
-	sdk install java 8.0.382-librca
-	sdk install java 17.0.8-graalce  
+    echo "SDKMAN not found. Please install SDKMAN first."
+    exit 1
+  fi
+  sdk install java 8.0.382-librca
+  sdk install java 17.0.8-graalce
   sdk install java 21-graalce
 }
 
+# Prepare the working directory
 function init {
-  rm -rf $TEMP_DIR
-  mkdir $TEMP_DIR
-  cd $TEMP_DIR || exit
+  rm -rf "$TEMP_DIR"
+  mkdir "$TEMP_DIR"
+  cd "$TEMP_DIR" || exit
   clear
 }
 
+# Switch to Java 8 and display version
 function useJava8 {
-  echo "#### Use Java 8, this is for educational purposes only"
-  echo "#### Please, do not try this at home"
-  echo ""
+  displayMessage "Use Java 8, this is for educational purposes only"
   pei "sdk use java 8.0.382-librca"
   pei "java -version" 
 }
 
+# Switch to Java 21 and display version
 function useJava21 {
-  echo "#### Because we have upgraded to Spring Boot 3"
-  echo "#### We need to use, at least, Java 17"
-  echo "#### Java 21 is GA so lets switch to Java 21"
-  echo ""
+  displayMessage "Switch to Java 21 for Spring Boot 3"
   pei "sdk use java 21-graalce"
   pei "java -version"
 }
 
+# Create a simple Spring Boot application
 function createAppWithInitializr {
-  echo "#### Create a simple application with Spring Boot version 2.6.0"
-  echo "#### Use the Spring Initializr (start.spring.io) with 'curl'"
-  echo ""
+  displayMessage "Create a Spring Boot 2.6.0 application"
   pei "export SPRING_BOOT_VERSION=2.6.0"
   pei "export DEPENDENCIES=web,actuator"
   pei "curl https://start.spring.io/starter.tgz -d dependencies=$DEPENDENCIES -d javaVersion=8 -d bootVersion=$SPRING_BOOT_VERSION -d type=maven-project | tar -xzf - || exit"
 }
 
+# Start the Spring Boot application
 function springBootStart {
-  echo "#### Start the application with the Spring Boot Maven Plugin"
-  echo "#### The -q options is for quiet mode"
-  echo ""
+  displayMessage "Start the Spring Boot application"
   pei "./mvnw -q clean package spring-boot:start -DskipTests 2>&1 | tee '$1' &"
 }
 
+# Stop the Spring Boot application
 function springBootStop {
-  echo "#### We have the startup time and the memory footprint"
-  echo "#### Stop the application using the Spring Boot Maven Plugin"
-  echo ""
+  displayMessage "Stop the Spring Boot application"
   pei "./mvnw spring-boot:stop -Dspring-boot.stop.fork"
 }
 
+# Check the health of the application
 function validateApp {
-  echo "#### Check to actuator endpoint to see if it's up and running:"
-  echo ""
+  displayMessage "Check application health"
   pei "http :8080/actuator/health"
 }
 
+# Display memory usage of the application
 function showMemoryUsage {
-  echo "#### Use the process ID: $1"
-  echo "#### to see how much memory its using"
-  echo ""
-  RSS=$(ps -o rss "$1" | tail -n1)
-  RSS=$(bc <<< "scale=1; ${RSS}/1024")
-  echo "The process was using ${RSS} megabytes"
-  echo "${RSS}" >> "$2"
+  local pid=$1
+  local log_file=$2
+  local rss=$(ps -o rss= "$pid" | tail -n1)
+  local mem_usage=$(bc <<< "scale=1; ${rss}/1024")
+  echo "The process was using ${mem_usage} megabytes"
+  echo "${mem_usage}" >> "$log_file"
 }
 
+# Upgrade the application to Spring Boot 3.1
 function rewriteApplication {
-  echo "#### Use the OpenRewrite Maven Plugin"
-  echo "#### Use the UpgradeSpringBoot_3_1 Recipe"
-  echo "#### To upgrade to the latest version of Spring Boot"
-  echo ""
+  displayMessage "Upgrade to Spring Boot 3.1"
   pei "./mvnw -U org.openrewrite.maven:rewrite-maven-plugin:run -Drewrite.recipeArtifactCoordinates=org.openrewrite.recipe:rewrite-spring:LATEST -DactiveRecipes=org.openrewrite.java.spring.boot3.UpgradeSpringBoot_3_1"
 }
 
+# Build a native image of the application
 function buildNative {
-  echo "#### Spring Framework 6 and Spring Boot 3 introduced Ahead of Time (AOT) Processing"
-  echo "#### Use the native profile for AOT Processing"
-  echo "#### It uses GraalVM to generate a statically-linked native binary"
-  echo ""
+  displayMessage "Build a native image with AOT"
   pei "./mvnw -Pnative native:compile"
 }
 
+# Start the native image
 function startNative {
-  echo "#### Start the native image"
-  echo ""
+  displayMessage "Start the native image"
   pei "./target/demo 2>&1 | tee nativeWith3.1.log &"
 }
 
+# Stop the native image
 function stopNative {
-  echo "#### Stop the 'native image"
-  echo ""
-  pei "export NPID=$(pgrep demo)"
-  pei "kill -9 $NPID"
+  displayMessage "Stop the native image"
+  local npid=$(pgrep demo)
+  pei "kill -9 $npid"
 }
 
+# Build OCI images
 function buildOCI {
-  echo "#### Build an OCI Image using the JVM"
-  echo "#### Build an OCI Image using GraalVM"
-  echo "#### Tag the multi-architecture 'dashaun/builder:tiny' for use, instead of the default"
-  pei ""
+  displayMessage "Build OCI images"
   pei "docker pull dashaun/builder:tiny && docker tag dashaun/builder:tiny paketobuildpacks/builder:tiny && docker tag dashaun/builder:tiny paketobuildpacks/builder:base"
   pei "./mvnw clean spring-boot:build-image -Dspring-boot.build-image.imageName=demo:0.0.1-JVM -Dspring-boot.build-image.createdDate=now"
   pei "./mvnw clean -Pnative spring-boot:build-image -Dspring-boot.build-image.imageName=demo:0.0.1-Native -Dspring-boot.build-image.createdDate=now"
+}
+
+# Display a message with a header
+function displayMessage() {
+  echo "#### $1"
   echo ""
 }
 
+function startupTime() {
+  echo "$(sed -nE 's/.* in ([0-9]+\.[0-9]+) seconds.*/\1/p' < $1)"
+}
+
+# Compare and display statistics
 function statsSoFar {
-  echo "#### What did we see?"
+  displayMessage "Comparison of memory usage and startup times"
   echo ""
   echo "Spring Boot 2.6 with Java 8"
   grep -o 'Started DemoApplication in .*' < java8with2.6.log
@@ -153,10 +156,41 @@ function statsSoFar {
   echo "The Spring Boot 3.1 with AOT processing version is using $(bc <<< "scale=2; ${MEM3}/${MEM1}*100")% of the original footprint" 
 }
 
+function statsSoFarTable {
+  displayMessage "Comparison of memory usage and startup times"
+  echo ""
+
+  # Headers
+  printf "%-35s %-25s %-15s %s\n" "Configuration" "Startup Time (seconds)" "(MB) Used" "(MB) Reduction"
+  echo "--------------------------------------------------------------------------------------------"
+
+  # Spring Boot 2.6 with Java 8
+  #STARTUP1=$(sed -nE 's/.* in ([0-9]+\.[0-9]+) seconds.*/\1/p' < java8with2.6.log)
+  #STARTUP1=$(grep -o 'Started DemoApplication in .*' < java8with2.6.log)
+  MEM1=$(cat java8with2.6.log2)
+  printf "%-35s %-25s %-15s %s\n" "Spring Boot 2.6 with Java 8" "$(startupTime 'java8with2.6.log')" "$MEM1" "-"
+
+  # Spring Boot 3.1 with Java 21
+  #STARTUP2=$(grep -o 'Started DemoApplication in .*' < java21with3.1.log)
+  MEM2=$(cat java21with3.1.log2)
+  PERC2=$(bc <<< "scale=2; 100 - ${MEM2}/${MEM1}*100")
+  printf "%-35s %-25s %-15s %s \n" "Spring Boot 3.1 with Java 21" "$(startupTime 'java21with3.1.log')" "$MEM2" "$PERC2%"
+
+  # Spring Boot 3.1 with AOT processing, native image
+  #STARTUP3=$(grep -o 'Started DemoApplication in .*' < nativeWith3.1.log)
+  MEM3=$(cat nativeWith3.1.log2)
+  PERC3=$(bc <<< "scale=2; 100 - ${MEM3}/${MEM1}*100")
+  printf "%-35s %-25s %-15s %s \n" "Spring Boot 3.1 with AOT, native" "$(startupTime 'nativeWith3.1.log')" "$MEM3" "$PERC3%"
+
+  echo "--------------------------------------------------------------------------------------------"
+}
+
+# Display Docker image statistics
 function imageStats {
   pei "docker images | grep demo"
 }
 
+# Main execution flow
 initSDKman
 init
 useJava8
@@ -193,4 +227,5 @@ showMemoryUsage "$(pgrep demo)" nativeWith3.1.log2
 talkingPoint
 stopNative
 talkingPoint
-statsSoFar
+#statsSoFar
+statsSoFarTable
