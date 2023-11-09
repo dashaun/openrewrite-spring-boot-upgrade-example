@@ -1,4 +1,6 @@
 .idea
 .envrc
+vendir
+vendir.lock.yml
 spring-shell.log
 upgrade-example
