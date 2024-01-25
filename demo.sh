@@ -1,17 +1,91 @@
 #!/usr/bin/env bash
 
-# Load helper functions and set initial variables
-vendir sync
-. ./vendir/demo-magic/demo-magic.sh
 export TYPE_SPEED=100
 export DEMO_PROMPT="${GREEN}➜ ${CYAN}\W ${COLOR_RESET}"
 TEMP_DIR="upgrade-example"
 PROMPT_TIMEOUT=5
+returnVal=99
+noClear=""
 
-# Function to pause and clear the screen
+# Splain'r How this werks!
+function usage() {
+  echo ""
+  echo "Usage: $0 -Runs SpringBoot demo via demo.sh" 
+  echo ""
+  echo ""
+  echo "Demos Include: "
+  echo " -SpringBoot Upgrade."
+  echo " -Comparision of Native Images."
+  echo ""
+  echo "" 
+  echo "Options: "
+  echo ""
+  echo "   -noClear  -Does not clear screen between talking points. Allows full-scrollback."
+  echo ""
+  echo ""
+  echo "Example:  $0 -noClear"
+  echo ""
+  echo ""
+  echo ""    
+}
+
+
+if [  "$1" == "-H" ] || [ "$1" == "-h" ] || [ "$1" == "--H" ] || [ "$1" == "--h" ] || [ "$1" == "-help" ] || [ "$1" == "--help" ]
+	then
+		usage
+		exit 10
+fi		
+	
+if [ "$1" == "-noClear" ] 
+	then
+		noClear="Y"
+fi		
+
+	
+# Load helper functions and set initial variables
+returnVal=99
+vendir --version &> /dev/null	
+returnVal=$?
+	
+if [ $returnVal -ne 0 ]; then
+  echo "vendir not found. Please install vendir first."	
+	exit 1
+fi
+
+vendir sync
+. ./vendir/demo-magic/demo-magic.sh
+
+
+# Stop ANY & ALL Java Process...they could be Springboot running on our ports!
+function cleanUp {
+	local npid=""
+
+  npid=$(pgrep java)
+  
+ 	if [ "$npid" != "" ] 
+		then
+  		
+  		displayMessage "*** Stopping Any Previous Existing SpringBoot Apps..."		
+			
+			while [ "$npid" != "" ]
+			do
+				echo "***KILLING OFF The Following: $npid..."
+		  	pei "kill -9 $npid"
+				npid=$(pgrep java)
+			done  
+		
+	fi
+}
+
+# Function to pause and clear [ or not ] the screen
 function talkingPoint() {
   wait
-  clear
+  
+	if [ "$noClear" != "Y" ] 
+		then
+			clear
+	fi		
+
 }
 
 # Initialize SDKMAN and install required Java versions
@@ -33,7 +107,11 @@ function init {
   rm -rf "$TEMP_DIR"
   mkdir "$TEMP_DIR"
   cd "$TEMP_DIR" || exit
-  clear
+  
+	if [ "$noClear" != "Y" ] 
+		then
+			clear
+	fi		
 }
 
 # Switch to Java 8 and display version
@@ -58,7 +136,7 @@ function cloneApp {
 
 # Start the Spring Boot application
 function springBootStart {
-  displayMessage "Start the Spring Boot application"
+  displayMessage "Start the Spring Boot application, Wait For It...."
   pei "./mvnw -q clean package spring-boot:start -DskipTests 2>&1 | tee '$1' &"
 }
 
@@ -189,6 +267,8 @@ function imageStats {
 }
 
 # Main execution flow
+
+cleanUp
 initSDKman
 init
 useJava8
