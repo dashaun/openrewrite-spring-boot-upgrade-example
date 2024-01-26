@@ -43,12 +43,22 @@ fi
 
 	
 # Load helper functions and set initial variables
+
 returnVal=99
 vendir --version &> /dev/null	
 returnVal=$?
 	
 if [ $returnVal -ne 0 ]; then
   echo "vendir not found. Please install vendir first."	
+	exit 1
+fi
+
+returnVal=99
+http --version &> /dev/null	
+returnVal=$?
+	
+if [ $returnVal -ne 0 ]; then
+  echo "httpie not found. Please install httpie first."	
 	exit 1
 fi
 
