@@ -186,7 +186,7 @@ function statsSoFarTable {
   printf "%-35s %-25s %-15s %s \n" "Spring Boot 3.2 with AOT, native" "$START3 ($PERCSTART3% faster)" "$MEM3" "$PERC3%"
 
 
-    echo "--------------------------------------------------------------------------------------------"
+  echo "--------------------------------------------------------------------------------------------"
 }
 
 # Display Docker image statistics
