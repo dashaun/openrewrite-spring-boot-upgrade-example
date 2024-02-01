@@ -28,6 +28,28 @@
 - https://www.youtube.com/live/ck4AP7kRQkc?si=lDl203vbfZysrX5e
 - https://www.youtube.com/live/VWPrYcyjG8Q?si=z7Q2Rm_XOlBwCiei
 
+## Running the Demo in a Docker container
+
+### Build the image
+
+```bash
+docker build -t openrewritedemo .
+```
+
+### Running the container
+
+This run command uses Docker volumes to cache the Maven local repository & the SDKMAN Java versions between runs.
+
+```bash
+docker run -it --rm \
+  --name openrewrite-demo \
+  -v "$(pwd):/data" \
+  -v openrewrite-root-m2:/root/.m2 \
+  -v openrewrite-root-sdkman-candidates:/root/.sdkman/candidates \
+  -w /data \
+  openrewritedemo ./demo.sh
+```
+
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [forks-shield]: https://img.shields.io/github/forks/dashaun/openrewrite-spring-boot-upgrade-example.svg?style=for-the-badge
