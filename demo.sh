@@ -71,8 +71,6 @@ function springBootStop {
 # Check the health of the application
 function validateApp {
   displayMessage "Check application health"
-  #pei "http :8080/actuator/health"
-  # add loop to recheck if app isn't up yet
   pei "while ! http :8080/actuator/health 2>/dev/null; do sleep 1; done"
 }
 
