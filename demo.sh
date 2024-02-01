@@ -1,10 +1,6 @@
 #!/usr/bin/env bash
 
-export TYPE_SPEED=100
-export DEMO_PROMPT="${GREEN}➜ ${CYAN}\W ${COLOR_RESET}"
 TEMP_DIR="upgrade-example"
-PROMPT_TIMEOUT=5
-returnVal=99
 noClear=""
 
 # Splain'r How this werks!
@@ -64,6 +60,9 @@ fi
 
 vendir sync
 . ./vendir/demo-magic/demo-magic.sh
+export TYPE_SPEED=100
+export DEMO_PROMPT="${GREEN}➜ ${CYAN}\W ${COLOR_RESET}"
+PROMPT_TIMEOUT=5
 
 
 # Stop ANY & ALL Java Process...they could be Springboot running on our ports!
@@ -109,7 +108,7 @@ function initSDKman() {
   fi
   sdk update
   sdk install java 8.0.392-librca
-  sdk install java 21.0.1-graalce
+  sdk install java 23.1.2.r21-nik
 }
 
 # Prepare the working directory
@@ -134,7 +133,7 @@ function useJava8 {
 # Switch to Java 21 and display version
 function useJava21 {
   displayMessage "Switch to Java 21 for Spring Boot 3"
-  pei "sdk use java 21.0.1-graalce"
+  pei "sdk use java 23.1.2.r21-nik"
   pei "java -version"
 }
 
