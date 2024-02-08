@@ -7,7 +7,7 @@
 ## The cheat code
 
 ```bash
-/mvnw -U org.openrewrite.maven:rewrite-maven-plugin:run \
+./mvnw -U org.openrewrite.maven:rewrite-maven-plugin:run \
  -Drewrite.recipeArtifactCoordinates=org.openrewrite.recipe:rewrite-spring:LATEST \
  -DactiveRecipes=org.openrewrite.java.spring.boot3.UpgradeSpringBoot_3_2
 ```
