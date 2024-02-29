@@ -107,7 +107,7 @@ function initSDKman() {
     exit 1
   fi
   sdk update
-  sdk install java 8.0.392-librca
+  sdk install java 8.0.402-librca
   sdk install java 23.1.2.r21-nik
 }
 
@@ -126,7 +126,7 @@ function init {
 # Switch to Java 8 and display version
 function useJava8 {
   displayMessage "Use Java 8, this is for educational purposes only, don't do this at home! (I have jokes.)"
-  pei "sdk use java 8.0.392-librca"
+  pei "sdk use java 8.0.402-librca"
   pei "java -version"
 }
 
@@ -174,7 +174,7 @@ function showMemoryUsage {
 # Upgrade the application to Spring Boot 3.2
 function rewriteApplication {
   displayMessage "Upgrade to Spring Boot 3.2"
-  pei "./mvnw -U org.openrewrite.maven:rewrite-maven-plugin:run -Drewrite.recipeArtifactCoordinates=org.openrewrite.recipe:rewrite-spring:LATEST -DactiveRecipes=org.openrewrite.java.spring.boot3.UpgradeSpringBoot_3_2"
+  pei "./mvnw -U org.openrewrite.maven:rewrite-maven-plugin:run -Drewrite.recipeArtifactCoordinates=org.openrewrite.recipe:rewrite-spring:LATEST -Drewrite.activeRecipes=org.openrewrite.java.spring.boot3.UpgradeSpringBoot_3_2"
 }
 
 # Build a native image of the application
@@ -254,7 +254,7 @@ function statsSoFarTable {
   #STARTUP1=$(grep -o 'Started HelloSpringApplication in .*' < java8with2.6.log)
   MEM1=$(cat java8with2.6.log2)
   START1=$(startupTime 'java8with2.6.log')
-  printf "%-35s %-25s %-15s %s\n" "Spring Boot 2.7 with Java 8" "$START1" "$MEM1" "-"
+  printf "%-35s %-25s %-15s %s\n" "Spring Boot 2.6 with Java 8" "$START1" "$MEM1" "-"
 
   # Spring Boot 3.2 with Java 21
   #STARTUP2=$(grep -o 'Started HelloSpringApplication in .*' < java21with3.2.log)
