@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+DEMO_START=$(date +%s)
+
 TEMP_DIR="upgrade-example"
 noClear=""
 
@@ -89,12 +91,14 @@ function cleanUp {
 # Function to pause and clear [ or not ] the screen
 function talkingPoint() {
   wait
-  
-	if [ "$noClear" != "Y" ] 
-		then
-			clear
-	fi		
 
+  if [ "$noClear" != "Y" ]; then
+    echo ""
+    echo "--------------------------------------------------------------------------------------------"
+    echo "********************************************************************************************"
+    echo "--------------------------------------------------------------------------------------------"
+    echo ""
+  fi
 }
 
 # Initialize SDKMAN and install required Java versions
@@ -107,7 +111,7 @@ function initSDKman() {
     exit 1
   fi
   sdk update
-  sdk install java 8.0.412-librca
+  sdk install java 8.0.432-librca
   sdk install java 23.1.2.r21-nik
 }
 
@@ -126,7 +130,7 @@ function init {
 # Switch to Java 8 and display version
 function useJava8 {
   displayMessage "Use Java 8, this is for educational purposes only, don't do this at home! (I have jokes.)"
-  pei "sdk use java 8.0.412-librca"
+  pei "sdk use java 8.0.432-librca"
   pei "java -version"
 }
 
@@ -274,6 +278,11 @@ function statsSoFarTable {
 
 
   echo "--------------------------------------------------------------------------------------------"
+  DEMO_STOP=$(date +%s)
+  DEMO_ELAPSED=$((DEMO_STOP - DEMO_START))
+  echo ""
+  echo ""
+  echo "Demo elapsed time: ${DEMO_ELAPSED} seconds"
 }
 
 # Display Docker image statistics
