@@ -64,7 +64,7 @@ vendir sync
 . ./vendir/demo-magic/demo-magic.sh
 export TYPE_SPEED=100
 export DEMO_PROMPT="${GREEN}➜ ${CYAN}\W ${COLOR_RESET}"
-PROMPT_TIMEOUT=5
+PROMPT_TIMEOUT=10
 
 
 # Stop ANY & ALL Java Process...they could be Springboot running on our ports!
@@ -92,12 +92,14 @@ function cleanUp {
 function talkingPoint() {
   wait
 
-  if [ "$noClear" != "Y" ]; then
+  if [ "$noClear" == "Y" ]; then
     echo ""
     echo "--------------------------------------------------------------------------------------------"
     echo "********************************************************************************************"
     echo "--------------------------------------------------------------------------------------------"
     echo ""
+  else
+    clear
   fi
 }
 
