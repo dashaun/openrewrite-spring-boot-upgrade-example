@@ -92,12 +92,14 @@ function cleanUp {
 function talkingPoint() {
   wait
 
-  if [ "$noClear" != "Y" ]; then
+  if [ "$noClear" == "Y" ]; then
     echo ""
     echo "--------------------------------------------------------------------------------------------"
     echo "********************************************************************************************"
     echo "--------------------------------------------------------------------------------------------"
     echo ""
+  else
+    clear
   fi
 }
 
@@ -111,8 +113,8 @@ function initSDKman() {
     exit 1
   fi
   sdk update
-  sdk install java 8.0.432-librca
-  sdk install java 23.1.2.r21-nik
+  sdk install java 8.0.442-librca
+  sdk install java 24.1.2.r23-nik
 }
 
 # Prepare the working directory
@@ -130,14 +132,14 @@ function init {
 # Switch to Java 8 and display version
 function useJava8 {
   displayMessage "Use Java 8, this is for educational purposes only, don't do this at home! (I have jokes.)"
-  pei "sdk use java 8.0.432-librca"
+  pei "sdk use java 8.0.442-librca"
   pei "java -version"
 }
 
-# Switch to Java 21 and display version
+# Switch to Java 23 and display version
 function useJava21 {
-  displayMessage "Switch to Java 21 for Spring Boot 3"
-  pei "sdk use java 23.1.2.r21-nik"
+  displayMessage "Switch to Java 23 for Spring Boot 3"
+  pei "sdk use java 24.1.2.r23-nik"
   pei "java -version"
 }
 
@@ -227,7 +229,7 @@ function statsSoFar {
   echo "The process was using $(cat java8with2.6.log2) megabytes"
   echo ""
   echo ""
-  echo "Spring Boot 3.3 with Java 21"
+  echo "Spring Boot 3.3 with Java 23"
   grep -o 'Started HelloSpringApplication in .*' < java21with3.3.log
   echo "The process was using $(cat java21with3.3.log2) megabytes"
   echo ""
@@ -241,8 +243,50 @@ function statsSoFar {
   MEM2="$(grep '\S' java21with3.3.log2)"
   MEM3="$(grep '\S' nativeWith3.3.log2)"
   echo ""
-  echo "The Spring Boot 3.3 with Java 21 version is using $(bc <<< "scale=2; ${MEM2}/${MEM1}*100")% of the original footprint"
+  echo "The Spring Boot 3.3 with Java 23 version is using $(bc <<< "scale=2; ${MEM2}/${MEM1}*100")% of the original footprint"
   echo "The Spring Boot 3.3 with AOT processing version is using $(bc <<< "scale=2; ${MEM3}/${MEM1}*100")% of the original footprint"
+}
+
+function statsSoFarTableColored {
+  displayMessage "Comparison of memory usage and startup times"
+  echo ""
+
+  # Define colors
+  local WHITE='\033[1;37m'
+  local GREEN='\033[1;32m'
+  local BLUE='\033[1;34m'
+  local YELLOW='\033[1;33m'
+  local NC='\033[0m' # No Color
+
+  # Headers (White)
+  printf "${WHITE}%-35s %-25s %-15s %s${NC}\n" "Configuration" "Startup Time (seconds)" "(MB) Used" "(MB) Savings"
+  echo -e "${WHITE}--------------------------------------------------------------------------------------------${NC}"
+
+  # Spring Boot 2.6 with Java 8 (Yellow - baseline)
+  MEM1=$(cat java8with2.6.log2)
+  START1=$(startupTime 'java8with2.6.log')
+  printf "${RED}%-35s %-25s %-15s %s${NC}\n" "Spring Boot 2.6 with Java 8" "$START1" "$MEM1" "-"
+
+  # Spring Boot 3.3 with Java 23 (Blue - improved)
+  MEM2=$(cat java21with3.3.log2)
+  PERC2=$(bc <<< "scale=2; 100 - ${MEM2}/${MEM1}*100")
+  START2=$(startupTime 'java21with3.3.log')
+  PERCSTART2=$(bc <<< "scale=2; 100 - ${START2}/${START1}*100")
+  printf "${YELLOW}%-35s %-25s %-15s %s ${NC}\n" "Spring Boot 3.3 with Java 23" "$START2 ($PERCSTART2% faster)" "$MEM2" "$PERC2%"
+
+  # Spring Boot 3.3 with AOT processing, native image (Green - best)
+  MEM3=$(cat nativeWith3.3.log2)
+  PERC3=$(bc <<< "scale=2; 100 - ${MEM3}/${MEM1}*100")
+  START3=$(startupTime 'nativeWith3.3.log')
+  PERCSTART3=$(bc <<< "scale=2; 100 - ${START3}/${START1}*100")
+  printf "${GREEN}%-35s %-25s %-15s %s ${NC}\n" "Spring Boot 3.3 with AOT, native" "$START3 ($PERCSTART3% faster)" "$MEM3" "$PERC3%"
+
+  echo -e "${WHITE}--------------------------------------------------------------------------------------------${NC}"
+  DEMO_STOP=$(date +%s)
+  DEMO_ELAPSED=$((DEMO_STOP - DEMO_START))
+  echo ""
+  echo ""
+  echo -e "${WHITE}Demo elapsed time: ${DEMO_ELAPSED} seconds${NC}"
 }
 
 function statsSoFarTable {
@@ -260,13 +304,13 @@ function statsSoFarTable {
   START1=$(startupTime 'java8with2.6.log')
   printf "%-35s %-25s %-15s %s\n" "Spring Boot 2.6 with Java 8" "$START1" "$MEM1" "-"
 
-  # Spring Boot 3.3 with Java 21
+  # Spring Boot 3.3 with Java 23
   #STARTUP2=$(grep -o 'Started HelloSpringApplication in .*' < java21with3.3.log)
   MEM2=$(cat java21with3.3.log2)
   PERC2=$(bc <<< "scale=2; 100 - ${MEM2}/${MEM1}*100")
   START2=$(startupTime 'java21with3.3.log')
   PERCSTART2=$(bc <<< "scale=2; 100 - ${START2}/${START1}*100")
-  printf "%-35s %-25s %-15s %s \n" "Spring Boot 3.3 with Java 21" "$START2 ($PERCSTART2% faster)" "$MEM2" "$PERC2%"
+  printf "%-35s %-25s %-15s %s \n" "Spring Boot 3.3 with Java 23" "$START2 ($PERCSTART2% faster)" "$MEM2" "$PERC2%"
 
   # Spring Boot 3.3 with AOT processing, native image
   #STARTUP3=$(grep -o 'Started HelloSpringApplication in .*' < nativeWith3.3.log)
@@ -330,4 +374,5 @@ talkingPoint
 stopNative
 talkingPoint
 #statsSoFar
-statsSoFarTable
+#statsSoFarTable
+statsSoFarTableColored
