@@ -114,7 +114,7 @@ function initSDKman() {
   fi
   sdk update
   sdk install java 8.0.442-librca
-  sdk install java 24.1.2.r23-nik
+  sdk install java 24-graalce
 }
 
 # Prepare the working directory
@@ -138,8 +138,8 @@ function useJava8 {
 
 # Switch to Java 23 and display version
 function useJava21 {
-  displayMessage "Switch to Java 23 for Spring Boot 3"
-  pei "sdk use java 24.1.2.r23-nik"
+  displayMessage "Switch to Java 24 for Spring Boot 3"
+  pei "sdk use java 24-graalce"
   pei "java -version"
 }
 
@@ -229,7 +229,7 @@ function statsSoFar {
   echo "The process was using $(cat java8with2.6.log2) megabytes"
   echo ""
   echo ""
-  echo "Spring Boot 3.3 with Java 23"
+  echo "Spring Boot 3.3 with Java 24"
   grep -o 'Started HelloSpringApplication in .*' < java21with3.3.log
   echo "The process was using $(cat java21with3.3.log2) megabytes"
   echo ""
@@ -243,7 +243,7 @@ function statsSoFar {
   MEM2="$(grep '\S' java21with3.3.log2)"
   MEM3="$(grep '\S' nativeWith3.3.log2)"
   echo ""
-  echo "The Spring Boot 3.3 with Java 23 version is using $(bc <<< "scale=2; ${MEM2}/${MEM1}*100")% of the original footprint"
+  echo "The Spring Boot 3.3 with Java 24 version is using $(bc <<< "scale=2; ${MEM2}/${MEM1}*100")% of the original footprint"
   echo "The Spring Boot 3.3 with AOT processing version is using $(bc <<< "scale=2; ${MEM3}/${MEM1}*100")% of the original footprint"
 }
 
@@ -272,7 +272,7 @@ function statsSoFarTableColored {
   PERC2=$(bc <<< "scale=2; 100 - ${MEM2}/${MEM1}*100")
   START2=$(startupTime 'java21with3.3.log')
   PERCSTART2=$(bc <<< "scale=2; 100 - ${START2}/${START1}*100")
-  printf "${YELLOW}%-35s %-25s %-15s %s ${NC}\n" "Spring Boot 3.3 with Java 23" "$START2 ($PERCSTART2% faster)" "$MEM2" "$PERC2%"
+  printf "${YELLOW}%-35s %-25s %-15s %s ${NC}\n" "Spring Boot 3.3 with Java 24" "$START2 ($PERCSTART2% faster)" "$MEM2" "$PERC2%"
 
   # Spring Boot 3.3 with AOT processing, native image (Green - best)
   MEM3=$(cat nativeWith3.3.log2)
@@ -310,7 +310,7 @@ function statsSoFarTable {
   PERC2=$(bc <<< "scale=2; 100 - ${MEM2}/${MEM1}*100")
   START2=$(startupTime 'java21with3.3.log')
   PERCSTART2=$(bc <<< "scale=2; 100 - ${START2}/${START1}*100")
-  printf "%-35s %-25s %-15s %s \n" "Spring Boot 3.3 with Java 23" "$START2 ($PERCSTART2% faster)" "$MEM2" "$PERC2%"
+  printf "%-35s %-25s %-15s %s \n" "Spring Boot 3.3 with Java 24" "$START2 ($PERCSTART2% faster)" "$MEM2" "$PERC2%"
 
   # Spring Boot 3.3 with AOT processing, native image
   #STARTUP3=$(grep -o 'Started HelloSpringApplication in .*' < nativeWith3.3.log)
